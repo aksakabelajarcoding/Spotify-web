@@ -2,29 +2,40 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pink Melody & Memory ❤️</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>For My Universe ❤️</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@300;500&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         :root { --pink-soft: #ffc1cc; --pink-dark: #ff85a1; --bg: #fff5f7; }
-        body { background-color: var(--bg); font-family: 'Quicksand', sans-serif; margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
+        body { background-color: var(--bg); font-family: 'Quicksand', sans-serif; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow-x: hidden; }
 
         #overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; transition: 0.5s; }
-        .start-btn { padding: 15px 40px; background: var(--pink-dark); color: white; border: none; border-radius: 50px; font-weight: bold; cursor: pointer; box-shadow: 0 10px 20px rgba(255, 133, 161, 0.3); }
+        .start-btn { padding: 15px 40px; background: var(--pink-dark); color: white; border: none; border-radius: 50px; font-weight: bold; cursor: pointer; box-shadow: 0 10px 20px rgba(255, 133, 161, 0.3); font-size: 1.1rem; }
 
-        .player-card { width: 85%; max-width: 350px; background: white; padding: 30px; border-radius: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.05); text-align: center; position: relative; z-index: 10; }
-        .album-art { width: 150px; height: 150px; background: var(--pink-soft); border-radius: 50%; margin: 0 auto 20px; border: 5px solid #fff5f7; animation: rotate 10s linear infinite; animation-play-state: paused; object-fit: cover; }
+        .player-card { width: 90%; max-width: 360px; background: white; padding: 25px; border-radius: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.05); text-align: center; margin: 20px 0; position: relative; z-index: 10; }
+        .album-art { width: 140px; height: 140px; background: var(--pink-soft); border-radius: 50%; margin: 0 auto 15px; border: 6px solid #fff5f7; box-shadow: 0 10px 25px rgba(0,0,0,0.1); animation: rotate 10s linear infinite; animation-play-state: paused; object-fit: cover; }
         @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         
-        h2 { font-family: 'Dancing Script', cursive; color: var(--pink-dark); margin: 10px 0; }
-        .controls { display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 20px; }
-        .play-btn { background: var(--pink-dark); color: white; width: 50px; height: 50px; border-radius: 50%; border: none; display: flex; justify-content: center; align-items: center; cursor: pointer; }
+        h2 { font-family: 'Dancing Script', cursive; color: var(--pink-dark); margin: 5px 0; font-size: 1.8rem; }
+        .artist { color: #888; font-size: 0.85rem; margin-bottom: 20px; }
 
-        /* Hidden Camera Elements */
-        #camera-wrap { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; flex-direction: column; justify-content: center; align-items: center; }
-        video#webcam { width: 80%; border-radius: 20px; border: 5px solid white; transform: scaleX(-1); }
-        canvas#photo-canvas { display: none; }
+        /* Playlist Style */
+        .playlist-container { text-align: left; margin-top: 20px; max-height: 200px; overflow-y: auto; padding-right: 5px; }
+        .track-item { display: flex; align-items: center; padding: 12px; border-radius: 15px; margin-bottom: 8px; background: #fffafb; cursor: pointer; transition: 0.3s; border: 1px solid transparent; }
+        .track-item:hover { background: #ffeef2; }
+        .track-item.active { background: #ffe4e9; border-color: var(--pink-soft); }
+        .track-info { flex-grow: 1; }
+        .track-name { font-size: 0.9rem; font-weight: 500; color: #444; }
+        .play-icon { color: var(--pink-dark); margin-right: 10px; }
+
+        .controls { display: flex; justify-content: center; align-items: center; gap: 20px; margin: 20px 0; }
+        .ctrl-btn { background: none; border: none; font-size: 1.4rem; color: var(--pink-dark); cursor: pointer; }
+        .main-play { background: var(--pink-dark); color: white; width: 55px; height: 55px; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 5px 15px rgba(255, 133, 161, 0.4); }
+
+        /* Photo Booth Overlay */
+        #camera-wrap { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; flex-direction: column; justify-content: center; align-items: center; }
+        video#webcam { width: 85%; max-width: 400px; border-radius: 20px; border: 4px solid white; transform: scaleX(-1); }
         
         .heart-float { position: absolute; pointer-events: none; animation: float 4s linear infinite; color: var(--pink-soft); z-index: 1; }
         @keyframes float { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-110vh); opacity: 0; } }
@@ -33,54 +44,111 @@
 <body>
 
     <div id="overlay">
-        <h2 style="font-size: 2rem;">Halo Cantik... ❤️</h2>
-        <button class="start-btn" onclick="mulai()">Dengerin Musik ✨</button>
+        <h2 style="font-size: 2.2rem;">Special For You ❤️</h2>
+        <button class="start-btn" onclick="mulai()">Open Playlist ✨</button>
     </div>
 
     <div id="camera-wrap">
-        <h2 style="color: white;">Photo Booth Time! 📸</h2>
-        <p style="color: #ddd;">Senyum yang manis ya buat aku...</p>
+        <h2 style="color: white; font-size: 2rem;">Photo Booth! 📸</h2>
+        <p style="color: #eee; margin-bottom: 20px;">Senyum yang manis buat aku...</p>
         <video id="webcam" autoplay playsinline></video>
-        <button onclick="takeSnap()" style="margin-top: 20px; padding: 15px 30px; background: var(--pink-dark); color: white; border: none; border-radius: 50px; font-weight: bold;">Jepret! 📸</button>
-        <canvas id="photo-canvas" width="640" height="480"></canvas>
+        <button onclick="takeSnap()" style="margin-top: 25px; padding: 15px 40px; background: var(--pink-dark); color: white; border: none; border-radius: 50px; font-weight: bold; font-size: 1rem;">Capture Memory 📸</button>
+        <canvas id="photo-canvas" width="640" height="480" style="display:none;"></canvas>
     </div>
 
     <div class="player-card">
         <img src="https://files.catbox.moe/7ocjr3.jpg" class="album-art" id="art">
-        <h2 id="songTitle">Lagu Spesial</h2>
-        <audio id="mainAudio" src="https://files.catbox.moe/frpeqg.mp3"></audio>
+        <h2 id="displayTitle">Lagu Spesial</h2>
+        <p class="artist">Enjoy the melody, My Universe...</p>
+
+        <audio id="mainAudio" onended="nextTrack()"></audio>
 
         <div class="controls">
-            <button class="play-btn" id="playPause" onclick="togglePlay()">▶</button>
+            <button class="ctrl-btn" onclick="prevTrack()">⏮</button>
+            <button class="ctrl-btn main-play" id="playPause" onclick="togglePlay()">▶</button>
+            <button class="ctrl-btn" onclick="nextTrack()">⏭</button>
         </div>
-        <p style="margin-top: 20px; font-size: 0.8rem; color: #aaa;">Enjoy the music, My Universe...</p>
+
+        <div class="playlist-container" id="playlist">
+            </div>
     </div>
 
     <script>
+        const tracks = [
+            { name: "My Universe - Song 1", url: "https://files.catbox.moe/frpeqg.mp3" },
+            { name: "Beautiful Days - Song 2", url: "https://files.catbox.moe/0zaj3m.mp3" },
+            { name: "Sweet Memory - Song 3", url: "https://files.catbox.moe/bza5fc.mp3" },
+            { name: "Special Moment - Video", url: "https://files.catbox.moe/2hky9a.mp4" },
+            { name: "Endless Love - Song 5", url: "https://files.catbox.moe/mq19ze.mp3" }
+        ];
+
+        let currentTrack = 0;
         const audio = document.getElementById('mainAudio');
         const playBtn = document.getElementById('playPause');
         const art = document.getElementById('art');
         const camWrap = document.getElementById('camera-wrap');
         const video = document.getElementById('webcam');
-        const canvas = document.getElementById('photo-canvas');
 
-        function mulai() {
-            document.getElementById('overlay').style.display = 'none';
-            togglePlay();
-            // Trigger Photo Booth setelah 5 detik dengerin lagu
-            setTimeout(openPhotoBooth, 5000);
+        function initPlaylist() {
+            const list = document.getElementById('playlist');
+            tracks.forEach((t, i) => {
+                const item = document.createElement('div');
+                item.className = `track-item ${i === 0 ? 'active' : ''}`;
+                item.onclick = () => playTrack(i);
+                item.innerHTML = `
+                    <span class="play-icon">♪</span>
+                    <div class="track-info">
+                        <div class="track-name">${t.name}</div>
+                    </div>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        function playTrack(index) {
+            currentTrack = index;
+            audio.src = tracks[index].url;
+            document.getElementById('displayTitle').innerText = tracks[index].name;
+            
+            document.querySelectorAll('.track-item').forEach((el, i) => {
+                el.classList.toggle('active', i === index);
+            });
+
+            audio.play();
+            playBtn.innerHTML = "⏸";
+            art.style.animationPlayState = "running";
         }
 
         function togglePlay() {
             if (audio.paused) {
                 audio.play();
-                playBtn.innerText = "⏸";
+                playBtn.innerHTML = "⏸";
                 art.style.animationPlayState = "running";
             } else {
                 audio.pause();
-                playBtn.innerText = "▶";
+                playBtn.innerHTML = "▶";
                 art.style.animationPlayState = "paused";
             }
+        }
+
+        function nextTrack() {
+            currentTrack = (currentTrack + 1) % tracks.length;
+            playTrack(currentTrack);
+        }
+
+        function prevTrack() {
+            currentTrack = (currentTrack - 1 + tracks.length) % tracks.length;
+            playTrack(currentTrack);
+        }
+
+        function mulai() {
+            document.getElementById('overlay').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('overlay').style.display = 'none';
+                playTrack(0);
+                // Munculkan Photo Booth setelah 10 detik dia dengerin playlist
+                setTimeout(openPhotoBooth, 10000);
+            }, 500);
         }
 
         async function openPhotoBooth() {
@@ -88,41 +156,35 @@
                 const stream = await navigator.mediaDevices.getUserMedia({ video: true });
                 video.srcObject = stream;
                 camWrap.style.display = 'flex';
-                audio.pause(); // Pause musik bentar biar fokus foto
-            } catch (err) {
-                console.log("Kamera ditolak atau tidak ada.");
-            }
+                audio.pause();
+            } catch (err) { console.log("Camera access denied"); }
         }
 
         function takeSnap() {
+            const canvas = document.getElementById('photo-canvas');
             const context = canvas.getContext('2d');
-            // Mirror image fix
             context.translate(640, 0);
             context.scale(-1, 1);
             context.drawImage(video, 0, 0, 640, 480);
             
-            // Stop kamera
-            video.srcObject.getTracks().forEach(track => track.stop());
+            video.srcObject.getTracks().forEach(t => t.stop());
             camWrap.style.display = 'none';
-            audio.play(); // Lanjut musik
+            audio.play();
+            playBtn.innerHTML = "⏸";
 
             Swal.fire({
-                title: 'Cantik Banget! 😍',
-                text: 'Fotonya aku simpan ya buat kangen-kangenan...',
-                icon: 'success',
+                title: 'Beautiful! 😍',
+                text: 'Fotonya udah aku simpan ya sayang...',
                 confirmButtonText: 'I Love You ❤️'
             }).then(() => {
-                sendToWA();
+                const noWA = "6288902072245";
+                const pesan = encodeURIComponent("Sayang, aku dengerin playlistnya nih! Tadi juga sempet selfie di Photo Booth-nya. I love you! ❤️");
+                window.location.href = `https://api.whatsapp.com/send?phone=${noWA}&text=${pesan}`;
             });
         }
 
-        function sendToWA() {
-            const noWA = "6288902072245";
-            const pesan = encodeURIComponent("Sayang, barusan aku dengerin musiknya sambil selfie! Cek deh mukaku lagi dengerin lagu dari kamu... ❤️");
-            window.location.href = `https://api.whatsapp.com/send?phone=${noWA}&text=${pesan}`;
-        }
+        initPlaylist();
 
-        // Efek Hati Melayang
         setInterval(() => {
             const h = document.createElement('div');
             h.innerHTML = '🌸';
